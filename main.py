@@ -33,6 +33,7 @@ def main():
   plt.show()
 
 #   total de entradas = total de saídas
+
 #   total de entradas no nó = total de saídas do nó
 
 if (__name__ == "__main__"):
