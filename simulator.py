@@ -140,6 +140,16 @@ def run(values, CAPACITY, X8):
         render_text(screen, font_big, 'G', (455, 430), YELLOW)
         render_text(screen, font_big, 'H', (455, 230), YELLOW)
 
+        # Edges Values
+        render_text(screen, font_small, 'X1', (680, 110), WHITE)
+        render_text(screen, font_small, 'X2', (895, 170), WHITE)
+        render_text(screen, font_small, 'X3', (980, 320), WHITE)
+        render_text(screen, font_small, 'X4', (900, 500), WHITE)
+        render_text(screen, font_small, 'X5', (690, 560), WHITE)
+        render_text(screen, font_small, 'X6', (485, 510), WHITE)
+        render_text(screen, font_small, 'X7', (395, 345), WHITE)
+        render_text(screen, font_small, 'X8', (480, 170), WHITE)
+
         # Edges In and Out Values
         render_text(screen, font_small, 'Ea', (620, 60), BLUE)
         render_text(screen, font_small, 'Sb', (825, 60), ORANGE)
