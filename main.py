@@ -149,7 +149,7 @@ def main():
   lower_bound = min(solution_1, solution_2, solution_3, solution_4, solution_5, solution_6, solution_7)
   
   print('\033[01m' + '\nLet\'s predict the flow of cars in the roundabout' + RESET)
-  print(f'Type the value of X8: ')
+  print('Type the value of X8: ')
 
   print(DARK_GRAY, end='')
   X8 = float(input())
@@ -204,34 +204,33 @@ def main():
   print(COLOR_RESET, end='')
 
   while run == 'y':
-    print(f"\nType the roads where you want to place the first cycle of traffic lights.\nJust the entries {BLUE}(Blue){COLOR_RESET} or empty.\n: ", end="")
+    # print(f"\nType the roads where you want to place the first cycle of traffic lights.\nJust the entries {BLUE}(Blue){COLOR_RESET} or empty.\n: ", end="")
 
-    print(DARK_GRAY, end='')
-    traffic_lights1 = input().split()
-    print(COLOR_RESET, end='')
+    # print(DARK_GRAY, end='')
+    # traffic_lights1 = input().split()
+    # print(COLOR_RESET, end='')
 
-    if traffic_lights1 == ['']:
-      traffic_lights1 = []
+    # if traffic_lights1 == ['']:
+    #   traffic_lights1 = []
 
-    print(f"\nType the roads where you want to place the second cycle of traffic lights\nJust the entries {BLUE}(Blue){COLOR_RESET} or empty.\n{YELLOW}Cant be the same as before.{COLOR_RESET}\n: ", end="")
+    # print(f"\nType the roads where you want to place the second cycle of traffic lights\nJust the entries {BLUE}(Blue){COLOR_RESET} or empty.\n{YELLOW}Can't be the same as before.{COLOR_RESET}\n: ", end="")
 
-    print(DARK_GRAY, end='')
-    traffic_lights2 = input().split()
-    print(COLOR_RESET, end='')
-
-    if traffic_lights2 == ['']:
-      traffic_lights2 = []
+    # print(DARK_GRAY, end='')
+    # traffic_lights2 = input().split()
+    # print(COLOR_RESET, end='')
+    
+    # if traffic_lights2 == ['']:
+    #   traffic_lights2 = []
 
     print(GREEN,"\nRunning simulation...", COLOR_RESET)
   
     values = [[Ea, Ec, Ee, Eg], [Sb, Sd, Sf, Sh]]
-    simulator.run(values, CAPACITY, X8, traffic_lights1, traffic_lights2)
+    simulator.run(values, CAPACITY, X8)
 
     print(BLUE,"\n\n\tRun again?\n\n\t(y/n): ",COLOR_RESET, end='')
     print(DARK_GRAY, end='')
     run = input()
     print(COLOR_RESET, end='')
-
 
   return 0
 
