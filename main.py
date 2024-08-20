@@ -46,11 +46,6 @@ def main():
   # !--> That's the whole purpose of the image below, you will see why later
   # !--> Remember to close the image to continue the program
 
-  img = Image.open('images/image_wo_color.png')
-
-  imgplot = plt.imshow(img)
-  plt.show()
-  
   # !--> I put a "auto-complete" for the inputs values here
   # !--> Because I was bored of typing the same values over and over again
   # !--> You can remove the comments and type the values manually
@@ -58,21 +53,21 @@ def main():
 
   print(f'Enter the input values {BLUE}(Blue){COLOR_RESET}, separating them with a space:')
   print(DARK_GRAY, end='')
-  # Ae, Ce, Ee, Ge = [int(x) for x in input().split()]
-  Ae, Ce, Ee, Ge =  [27, 63, 48, 82]
-  print(Ae, Ce, Ee, Ge)
+  # Ea, Ec, Ee, Eg = [int(x) for x in input().split()]
+  Ea, Ec, Ee, Eg =  [27, 63, 48, 82]
+  print(Ea, Ec, Ee, Eg)
   print(COLOR_RESET, end='')
 
   print(f'\nEnter the output values {RED}(Red){COLOR_RESET}, separating them with a space:')
   print(DARK_GRAY, end='')
-  # Bs, Ds, Fs, Hs = [int(x) for x in input().split()]
-  Bs, Ds, Fs, Hs = [35, 52, 68, 65]
-  print(Bs, Ds, Fs, Hs)
+  # Sb, Sd, Sf, Sh = [int(x) for x in input().split()]
+  Sb, Sd, Sf, Sh = [35, 52, 68, 65]
+  print(Sb, Sd, Sf, Sh)
   print(COLOR_RESET, end='')
   print("\n")
 
   # Total number of inputs at the node = Total number of outputs at the node
-  if (Ae + Ce + Ee + Ge != Bs + Ds + Fs + Hs):
+  if (Ea + Ec + Ee + Eg != Sb + Sd + Sf + Sh):
     print(RED + '\nThe total number of inputs is different from the total number of outputs')
     print(COLOR_RESET, end='')
     return 1
@@ -83,25 +78,25 @@ def main():
 
   # Equations:
 
-  # A: X8 + Ae = X1 ==> X8 - X1 = -Ae
-  # B: X1 = Bs + X2 ==> X1 - X2 = Bs
-  # C: X2 + Ce = X3 ==> X2 - X3 = -Ce
-  # D: X3 = Cs + X4 ==> X3 - X4 = Ds
+  # A: X8 + Ea = X1 ==> X8 - X1 = -Ea
+  # B: X1 = Sb + X2 ==> X1 - X2 = Sb
+  # C: X2 + Ec = X3 ==> X2 - X3 = -Ec
+  # D: X3 = Cs + X4 ==> X3 - X4 = Sd
   # E: X4 + Ee = X5 ==> X4 - X5 = -Ee
-  # F: X5 = Ds + X6 ==> X5 - X6 = Fs
-  # G: X6 + Ge = X7 ==> X6 - X7 = -Ge
-  # H: X7 = Fs + X8 ==> X7 - X8 = Hs
+  # F: X5 = Sd + X6 ==> X5 - X6 = Sf
+  # G: X6 + Eg = X7 ==> X6 - X7 = -Eg
+  # H: X7 = Sf + X8 ==> X7 - X8 = Sh
 
   # Creating the matrix
 
-  flow_matrix = [[-1,  0,  0,  0,  0,  0,  0,  1, -Ae],
-                 [ 1, -1,  0,  0,  0,  0,  0,  0,  Bs],
-                 [ 0,  1, -1,  0,  0,  0,  0,  0, -Ce],
-                 [ 0,  0,  1, -1,  0,  0,  0,  0,  Ds],
+  flow_matrix = [[-1,  0,  0,  0,  0,  0,  0,  1, -Ea],
+                 [ 1, -1,  0,  0,  0,  0,  0,  0,  Sb],
+                 [ 0,  1, -1,  0,  0,  0,  0,  0, -Ec],
+                 [ 0,  0,  1, -1,  0,  0,  0,  0,  Sd],
                  [ 0,  0,  0,  1, -1,  0,  0,  0, -Ee],
-                 [ 0,  0,  0,  0,  1, -1,  0,  0,  Fs],
-                 [ 0,  0,  0,  0,  0,  1, -1,  0, -Ge],
-                 [ 0,  0,  0,  0,  0,  0,  1, -1,  Hs],]
+                 [ 0,  0,  0,  0,  1, -1,  0,  0,  Sf],
+                 [ 0,  0,  0,  0,  0,  1, -1,  0, -Eg],
+                 [ 0,  0,  0,  0,  0,  0,  1, -1,  Sh],]
   
   # !--> Now we are using the escalation.py file to solve the matrix
   # !--> It basically show step by step the solution of the matrix
@@ -121,25 +116,25 @@ def main():
 
   # !--> Some explanation about the results
 
-  # [[ 1,  0,  0,  0,  0,  0,  0, -1, Ae                                    ],
-  #  [ 0,  1,  0,  0,  0,  0,  0, -1, -Bs + Ae                              ],
-  #  [ 0,  0,  1,  0,  0,  0,  0, -1, Ce - Bs + Ae                          ],
-  #  [ 0,  0,  0,  1,  0,  0,  0, -1, -Ds + Ce - Bs + Ae                    ],
-  #  [ 0,  0,  0,  0,  1,  0,  0, -1, Ee - Ds + Ce - Bs + Ae                ],
-  #  [ 0,  0,  0,  0,  0,  1,  0, -1, -Fs + Ee - Ds + Ce - Bs + Ae          ],
-  #  [ 0,  0,  0,  0,  0,  0,  1, -1, Ge - Fs + Ee - Ds + Ce - Bs + Ae      ],
-  #  [ 0,  0,  0,  0,  0,  0,  0,  0, -Hs + Ge - Fs + Ee - Ds + Ce - Bs + Ae]]
+  # [[ 1,  0,  0,  0,  0,  0,  0, -1, Ea                                    ],
+  #  [ 0,  1,  0,  0,  0,  0,  0, -1, -Sb + Ea                              ],
+  #  [ 0,  0,  1,  0,  0,  0,  0, -1, Ec - Sb + Ea                          ],
+  #  [ 0,  0,  0,  1,  0,  0,  0, -1, -Sd + Ec - Sb + Ea                    ],
+  #  [ 0,  0,  0,  0,  1,  0,  0, -1, Ee - Sd + Ec - Sb + Ea                ],
+  #  [ 0,  0,  0,  0,  0,  1,  0, -1, -Sf + Ee - Sd + Ec - Sb + Ea          ],
+  #  [ 0,  0,  0,  0,  0,  0,  1, -1, Eg - Sf + Ee - Sd + Ec - Sb + Ea      ],
+  #  [ 0,  0,  0,  0,  0,  0,  0,  0, -Sh + Eg - Sf + Ee - Sd + Ec - Sb + Ea]]
 
   # Entries - Exits must be 0
-  # In other words: Ae + Be + Ce + De - As - Bs - Cs - Ds = 0
+  # In other words: Ea + Be + Ec + De - As - Sb - Cs - Sd = 0
 
-  # X1 = Ae + X8
-  # X2 = -Bs + Ae + X8
-  # X3 = Ce - Bs + Ae + X8
-  # X4 = -Ds + Ce - Bs + Ae + X8
-  # X5 = Ee - Ds + Ce - Bs + Ae + X8
-  # X6 = -Fs + Ee - Ds + Ce - Bs + Ae + X8
-  # X7 = Ge - Fs + Ee - Ds + Ce - Bs + Ae + X8
+  # X1 = Ea + X8
+  # X2 = -Sb + Ea + X8
+  # X3 = Ec - Sb + Ea + X8
+  # X4 = -Sd + Ec - Sb + Ea + X8
+  # X5 = Ee - Sd + Ec - Sb + Ea + X8
+  # X6 = -Sf + Ee - Sd + Ec - Sb + Ea + X8
+  # X7 = Eg - Sf + Ee - Sd + Ec - Sb + Ea + X8
   # X8 = X8
 
   
@@ -157,13 +152,13 @@ def main():
   print(f'Type the value of X8: ')
 
   print(DARK_GRAY, end='')
-  X8 = int(input())
+  X8 = float(input())
   print(COLOR_RESET, end='')
 
-  while X8 < (-lower_bound):
-    print(f'Type the value of X8 {YELLOW}(greater than {-lower_bound}){COLOR_RESET}: ')
+  while X8 <= (-lower_bound) and X8 >= Ea + Ec + Ee + Eg:
+    print(f'Type the value of X8 {YELLOW}({-lower_bound} <= X8 <= {Ea + Ec + Ee + Eg}){COLOR_RESET}: ')
     print(DARK_GRAY, end='')
-    X8 = int(input())
+    X8 = float(input())
     print(COLOR_RESET, end='')
 
   # Calculating the flow of cars
@@ -210,17 +205,26 @@ def main():
 
   while run == 'y':
     print(f"\nType the roads where you want to place the first cycle of traffic lights.\nJust the entries {BLUE}(Blue){COLOR_RESET} or empty.\n: ", end="")
+
     print(DARK_GRAY, end='')
     traffic_lights1 = input().split()
     print(COLOR_RESET, end='')
+
+    if traffic_lights1 == ['']:
+      traffic_lights1 = []
+
     print(f"\nType the roads where you want to place the second cycle of traffic lights\nJust the entries {BLUE}(Blue){COLOR_RESET} or empty.\n{YELLOW}Cant be the same as before.{COLOR_RESET}\n: ", end="")
+
     print(DARK_GRAY, end='')
     traffic_lights2 = input().split()
     print(COLOR_RESET, end='')
 
-    print(GREEN,"\nRunning simulation...")
+    if traffic_lights2 == ['']:
+      traffic_lights2 = []
+
+    print(GREEN,"\nRunning simulation...", COLOR_RESET)
   
-    values = [[Ae, Ce, Ee, Ge], [Bs, Ds, Fs, Hs]]
+    values = [[Ea, Ec, Ee, Eg], [Sb, Sd, Sf, Sh]]
     simulator.run(values, CAPACITY, X8, traffic_lights1, traffic_lights2)
 
     print(BLUE,"\n\n\tRun again?\n\n\t(y/n): ",COLOR_RESET, end='')

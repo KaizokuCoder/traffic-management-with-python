@@ -30,9 +30,8 @@ def draw_arrow(screen, arrow_surface, pos, angle):
     screen.blit(rotated_arrow, arrow_rect.topleft)
 
 
-def draw_circle(screen, pos, radius, color):
-    pg.draw.circle(screen, color, pos, radius)
-
+# def draw_circle(screen, pos, radius, color):
+#     pg.draw.circle(screen, color, pos, radius)
 
 def render_text(screen, font, text, pos, color):
     text_surface = font.render(text, True, color)
@@ -50,15 +49,15 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
     # Initialize Pygame
     pg.init()
     screen = pg.display.set_mode((1250, 700))
-    pg.display.set_caption("Simulation with FPS Control")
+    pg.display.set_caption("Simulation of a Roundway with Traffic Lights")
     clock = pg.time.Clock()
     running = True
     FPS = 60  # Set the desired FPS
     frame_counter = 0
 
     # Initialize values
-    Ae, Ce, Ee, Ge = values[0]
-    Bs, Ds, Fs, Hs = values[1]
+    Ea, Ec, Ee, Eg = values[0]
+    Sb, Sd, Sf, Sh = values[1]
 
     # Initialize font
     pg.font.init()
@@ -81,10 +80,10 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
 
         screen.fill(BLACK)
         
-        Ae_aux, Ce_aux, Ee_aux, Ge_aux = Ae, Ce, Ee, Ge
+        Ea_aux, Ec_aux, Ee_aux, Eg_aux = Ea, Ec, Ee, Eg
 
         if set(traffic_lights1) & set(traffic_lights2):
-            print("Cycle 2 cannot have the same roads as Cycle 1. Please try again.")
+            print("\033[31m" + "Cycle 2 cannot have the same roads as Cycle 1. Please try again." + "\033[39m")
             traffic_lights2 = []
         else:
             if (frame_counter//600) % 2 == 0:
@@ -93,13 +92,13 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
             else:
                 traffic_lights_red = traffic_lights2
                 traffic_lights_green = traffic_lights1
-            if 'Ae' in traffic_lights_red:
-                Ae_aux = 0
+            if 'Ea' in traffic_lights_red:
+                Ea_aux = 0
                 fill_arrow(arrow_north_in, RED)
             else:
                 fill_arrow(arrow_north_in, GREEN)
-            if 'Ce' in traffic_lights_red:
-                Ce_aux = 0
+            if 'Ec' in traffic_lights_red:
+                Ec_aux = 0
                 fill_arrow(arrow_east_in, RED)
             else:
                 fill_arrow(arrow_east_in, GREEN)
@@ -108,25 +107,45 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
                 fill_arrow(arrow_south_in, RED)
             else:
                 fill_arrow(arrow_south_in, GREEN)
-            if 'Ge' in traffic_lights_red:
-                Ge_aux = 0
+            if 'Eg' in traffic_lights_red:
+                Eg_aux = 0
                 fill_arrow(arrow_west_in, RED)
             else:
                 fill_arrow(arrow_west_in, GREEN)
         
         
         # Update Values
-        X1 = Ae_aux + X8
-        X2 = -Bs + Ae_aux + X8
-        X3 = Ce_aux - Bs + Ae_aux + X8
-        X4 = -Ds + Ce_aux - Bs + Ae_aux + X8
-        X5 = Ee_aux - Ds + Ce_aux - Bs + Ae_aux + X8
-        X6 = -Fs + Ee_aux - Ds + Ce_aux - Bs + Ae_aux + X8
-        X7 = Ge_aux - Fs + Ee_aux - Ds + Ce_aux - Bs + Ae_aux + X8
+        X1 = Ea_aux + X8
+        X2 = -Sb + Ea_aux + X8
+        X3 = Ec_aux - Sb + Ea_aux + X8
+        X4 = -Sd + Ec_aux - Sb + Ea_aux + X8
+        X5 = Ee_aux - Sd + Ec_aux - Sb + Ea_aux + X8
+        X6 = -Sf + Ee_aux - Sd + Ec_aux - Sb + Ea_aux + X8
+        X7 = Eg_aux - Sf + Ee_aux - Sd + Ec_aux - Sb + Ea_aux + X8
 
-        current_flux = X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8
-        total_entries = Ae + Ce + Ee + Ge
-        total_exits = Bs + Ds + Fs + Hs
+        negatives = []
+
+        if X1 < 0:
+            negatives.append('X1')
+        if X2 < 0:
+            negatives.append('X2')
+        if X3 < 0:
+            negatives.append('X3')
+        if X4 < 0:
+            negatives.append('X4')
+        if X5 < 0:
+            negatives.append('X5')
+        if X6 < 0:
+            negatives.append('X6')
+        if X7 < 0:
+            negatives.append('X7')
+        if X8 < 0:
+            negatives.append('X8')
+
+        current_flux = abs(X1) + abs(X2) + abs(X3) + abs(X4) + abs(X5) + abs(X6) + abs(X7) + abs(X8)
+        total_entries = Ea_aux + Ec_aux + Ee_aux + Eg_aux
+        total_exits = Sb + Sd + Sf + Sh
+        
         overloaded = current_flux > CAPACITY # True if the roundway is overloaded
 
         # Draw Graph
@@ -156,14 +175,21 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
         draw_arrow(screen, arrow_west_out, (395, 245), 90)
 
         # Edges - Connections
-        draw_arrow(screen, arrow_ab, (715, 145), -90)
-        draw_arrow(screen, arrow_bc, (890, 190), -125)
-        draw_arrow(screen, arrow_cd, (962, 340), 180)
-        draw_arrow(screen, arrow_de, (885, 495), 125)
-        draw_arrow(screen, arrow_ef, (710, 548), 90)
-        draw_arrow(screen, arrow_fg, (540, 495), 55)
-        draw_arrow(screen, arrow_gh, (467, 345), 0)
-        draw_arrow(screen, arrow_ha, (538, 195), -55)
+        # Draw Edges - Connections
+        edges = {'X1': (arrow_ab, (715, 145), 270),
+             'X2': (arrow_bc, (890, 190), 55),
+             'X3': (arrow_cd, (962, 340), 0),
+             'X4': (arrow_de, (885, 495), 125),
+             'X5': (arrow_ef, (710, 548), 270),
+             'X6': (arrow_fg, (540, 495), 235),
+             'X7': (arrow_gh, (467, 345), 180),
+             'X8': (arrow_ha, (538, 195), 305)}
+
+        for edge, (arrow_surface, position, angle) in edges.items():
+            if edge not in negatives:
+                draw_arrow(screen, arrow_surface, position, angle)
+            else:
+                draw_arrow(screen, arrow_surface, position, angle + 180)
 
         # Edges Values
         render_text(screen, font_small, 'X1: %d' % X1, (680, 110), WHITE)
@@ -176,15 +202,14 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
         render_text(screen, font_small, 'X8: %d' % X8, (480, 170), WHITE)
 
         # Edges In and Out Values
-        render_text(screen, font_small, 'Ae: %d' % Ae_aux, (620, 60), RED if 'Ae' in traffic_lights_red else GREEN)
-        render_text(screen, font_small, 'Bs: %d' % Bs, (825, 60), ORANGE)
-        render_text(screen, font_small, 'Ce: %d' % Ce_aux, (1025, 215), RED if 'Ce' in traffic_lights_red else GREEN)
-        render_text(screen, font_small, 'Ds: %d' % Ds, (1005, 415), ORANGE)
+        render_text(screen, font_small, 'Ea: %d' % Ea_aux, (620, 60), RED if 'Ea' in traffic_lights_red else GREEN)
+        render_text(screen, font_small, 'Sb: %d' % Sb, (825, 60), ORANGE)
+        render_text(screen, font_small, 'Ec: %d' % Ec_aux, (1025, 215), RED if 'Ec' in traffic_lights_red else GREEN)
+        render_text(screen, font_small, 'Sd: %d' % Sd, (1005, 415), ORANGE)
         render_text(screen, font_small, 'Ee: %d' % Ee_aux, (820, 615), RED if 'Ee' in traffic_lights_red else GREEN)
-        render_text(screen, font_small, 'Fs: %d' % Fs, (620, 615), ORANGE)
-        render_text(screen, font_small, 'Ge: %d' % Ge_aux, (360, 415), RED if 'Ge' in traffic_lights_red else GREEN)
-        render_text(screen, font_small, 'Hs: %d' % Hs, (370, 215), ORANGE)
-
+        render_text(screen, font_small, 'Sf: %d' % Sf, (620, 615), ORANGE)
+        render_text(screen, font_small, 'Eg: %d' % Eg_aux, (360, 415), RED if 'Eg' in traffic_lights_red else GREEN)
+        render_text(screen, font_small, 'Sh: %d' % Sh, (370, 215), ORANGE)
 
 
         # Show Data
@@ -197,31 +222,31 @@ def run(values, CAPACITY, X8, traffic_lights1, traffic_lights2):
             render_text(screen, font_small, 'Roundway Stable', (10, 80), LIGHT_BLUE)
         
         render_text(screen, font_normal, 'Entries', (10, 110), GREEN)
-        render_text(screen, font_small, 'Ae: %.2f %%' % ((Ae/total_entries)*100), (10, 140), WHITE)
-        render_text(screen, font_small, 'Ce: %.2f %%' % ((Ce/total_entries)*100), (10, 160), WHITE)
-        render_text(screen, font_small, 'Ee: %.2f %%' % ((Ee/total_entries)*100), (10, 180), WHITE)
-        render_text(screen, font_small, 'Ge: %.2f %%' % ((Ge/total_entries)*100), (10, 200), WHITE)
+        render_text(screen, font_small, 'Ea: %.2f %%' % ((Ea_aux/total_entries)*100), (10, 140), WHITE)
+        render_text(screen, font_small, 'Ec: %.2f %%' % ((Ec_aux/total_entries)*100), (10, 160), WHITE)
+        render_text(screen, font_small, 'Ee: %.2f %%' % ((Ee_aux/total_entries)*100), (10, 180), WHITE)
+        render_text(screen, font_small, 'Eg: %.2f %%' % ((Eg_aux/total_entries)*100), (10, 200), WHITE)
 
         render_text(screen, font_normal, 'Exits', (10, 230), GREEN)
-        render_text(screen, font_small, 'Bs: %.2f %%' % ((Bs/total_exits)*100), (10, 260), WHITE)
-        render_text(screen, font_small, 'Ds: %.2f %%' % ((Ds/total_exits)*100), (10, 280), WHITE)
-        render_text(screen, font_small, 'Fs: %.2f %%' % ((Fs/total_exits)*100), (10, 300), WHITE)
-        render_text(screen, font_small, 'Hs: %.2f %%' % ((Hs/total_exits)*100), (10, 320), WHITE)
+        render_text(screen, font_small, 'Sb: %.2f %%' % ((Sb/total_exits)*100), (10, 260), WHITE)
+        render_text(screen, font_small, 'Sd: %.2f %%' % ((Sd/total_exits)*100), (10, 280), WHITE)
+        render_text(screen, font_small, 'Sf: %.2f %%' % ((Sf/total_exits)*100), (10, 300), WHITE)
+        render_text(screen, font_small, 'Sh: %.2f %%' % ((Sh/total_exits)*100), (10, 320), WHITE)
 
         render_text(screen, font_normal, 'Connections', (10, 350), GREEN)
-        render_text(screen, font_small, 'X1: %.2f %%' % ((X1/current_flux)*100), (10, 380), WHITE)
-        render_text(screen, font_small, 'X2: %.2f %%' % ((X2/current_flux)*100), (10, 400), WHITE)
-        render_text(screen, font_small, 'X3: %.2f %%' % ((X3/current_flux)*100), (10, 420), WHITE)
-        render_text(screen, font_small, 'X4: %.2f %%' % ((X4/current_flux)*100), (10, 440), WHITE)
-        render_text(screen, font_small, 'X5: %.2f %%' % ((X5/current_flux)*100), (10, 460), WHITE)
-        render_text(screen, font_small, 'X6: %.2f %%' % ((X6/current_flux)*100), (10, 480), WHITE)
-        render_text(screen, font_small, 'X7: %.2f %%' % ((X7/current_flux)*100), (10, 500), WHITE)
-        render_text(screen, font_small, 'X8: %.2f %%' % ((X8/current_flux)*100), (10, 520), WHITE)
+        render_text(screen, font_small, 'X1: %.2f %%' % ((abs(X1)/current_flux)*100), (10, 380), WHITE)
+        render_text(screen, font_small, 'X2: %.2f %%' % ((abs(X2)/current_flux)*100), (10, 400), WHITE)
+        render_text(screen, font_small, 'X3: %.2f %%' % ((abs(X3)/current_flux)*100), (10, 420), WHITE)
+        render_text(screen, font_small, 'X4: %.2f %%' % ((abs(X4)/current_flux)*100), (10, 440), WHITE)
+        render_text(screen, font_small, 'X5: %.2f %%' % ((abs(X5)/current_flux)*100), (10, 460), WHITE)
+        render_text(screen, font_small, 'X6: %.2f %%' % ((abs(X6)/current_flux)*100), (10, 480), WHITE)
+        render_text(screen, font_small, 'X7: %.2f %%' % ((abs(X7)/current_flux)*100), (10, 500), WHITE)
+        render_text(screen, font_small, 'X8: %.2f %%' % ((abs(X8)/current_flux)*100), (10, 520), WHITE)
 
         render_text(screen, font_normal, 'Traffic Lights', (10, 550), GREEN)
-        for  i in range(len(traffic_lights_red)):
+        for i in range(len(traffic_lights_red)):
             render_text(screen, font_small, '%s is on red light' % traffic_lights_red[i], (10, 580 + (i*20)), RED)
-        for  i in range(len(traffic_lights_green)):
+        for i in range(len(traffic_lights_green)):
             render_text(screen, font_small, '%s is on green light' % traffic_lights_green[i], (10, 580 + (len(traffic_lights_red)+i)*20), GREEN)
 
         # Update screen
