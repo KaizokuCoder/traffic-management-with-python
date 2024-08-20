@@ -1,13 +1,9 @@
-# Main libraries
-import json
-import numpy as np
-import math
-import matplotlib.pyplot as plt
-# Our files
+# Importing our files
 import escalation
 import simulator
-# Image processing library
-from PIL import Image
+
+# Importing libraries
+import json
 
 
 # !--> Search for the comments like this one though the code
@@ -17,6 +13,7 @@ from PIL import Image
 
 # Hard reset
 RESET = '\033[0m'
+print(RESET)
 
 # Color-map
 RED = '\033[31m'
@@ -32,6 +29,58 @@ COLOR_RESET = '\033[39m'
 
 # Roundway capacity
 CAPACITY = 250
+
+def menu(f, error = ''):
+  # Initializing Input and Output values
+  Ea, Ec, Ee, Eg = 1, 0, 0, 0
+  Sb, Sd, Sf, Sh = 0, 0, 0, 0
+
+  # Message for the user
+  msg = """Select an option:
+  1 - Input the values
+  2 - Grab from file
+"""
+
+  # Checking if there was an error
+  if (error != ''):
+    msg = RED + '\n' + error + '\n\n' + COLOR_RESET + msg
+
+  # Printing the message and getting user input
+  print(msg)
+  try:
+    op = int(input())
+
+    print('\n')
+
+    # Using user input for the values
+    if op == 1:
+      print(f'Enter the input values {BLUE}(Blue){COLOR_RESET}, separating them with a space:')
+      print(DARK_GRAY, end='')
+      Ea, Ec, Ee, Eg = [int(x) for x in input().split()]
+      print(COLOR_RESET, end='')
+
+      print(f'\nEnter the output values {RED}(Red){COLOR_RESET}, separating them with a space:')
+      print(DARK_GRAY, end='')
+      Sb, Sd, Sf, Sh = [int(x) for x in input().split()]
+      print(COLOR_RESET, end='')
+
+    # Using JSON file for the values
+    elif op == 2:
+      # Getting JSON data
+      data = json.load(f)
+
+      # Using JSON data
+      Ea, Ec, Ee, Eg = data[0]
+      Sb, Sd, Sf, Sh = data[1]
+
+    # Invalid option
+    else:
+      return menu(f, 'Invalid option!')
+
+  except:
+    return menu(f, 'Invalid option!')
+
+  return Ea, Sb, Ec, Sd, Ee, Sf, Eg, Sh
 
 def main():
   """
@@ -51,26 +100,40 @@ def main():
   # !--> You can remove the comments and type the values manually
   # !--> Also, I changed the variables names so that we fix our problem with the matrix
 
-  print(f'Enter the input values {BLUE}(Blue){COLOR_RESET}, separating them with a space:')
+  # Opening the JSON file
+  f = open('data.json')
+
+  # Getting the values for the inputs and outputs of the roundabout
+  Ea, Sb, Ec, Sd, Ee, Sf, Eg, Sh = menu(f)
+
+  # Checking for an error
+  while (Ea + Ec + Ee + Eg != Sb + Sd + Sf + Sh):
+    Ea, Sb, Ec, Sd, Ee, Sf, Eg, Sh = menu(f, 'The total number of inputs is different from the total number of outputs!')
+
+  print("\n")
+
+  print(f'Current values for the inputs {BLUE}(Blue){COLOR_RESET}')
   print(DARK_GRAY, end='')
-  # Ea, Ec, Ee, Eg = [int(x) for x in input().split()]
-  Ea, Ec, Ee, Eg =  [27, 63, 48, 82]
+  # # Ea, Ec, Ee, Eg = [int(x) for x in input().split()]
+  # # Using JSON data
+  # Ea, Ec, Ee, Eg = data[0]
   print(Ea, Ec, Ee, Eg)
   print(COLOR_RESET, end='')
 
-  print(f'\nEnter the output values {RED}(Red){COLOR_RESET}, separating them with a space:')
+  print(f'\nCurrent values for the outputs {RED}(Red){COLOR_RESET}')
   print(DARK_GRAY, end='')
-  # Sb, Sd, Sf, Sh = [int(x) for x in input().split()]
-  Sb, Sd, Sf, Sh = [35, 52, 68, 65]
+  # # Sb, Sd, Sf, Sh = [int(x) for x in input().split()]
+  # # Using JSON data
+  # Sb, Sd, Sf, Sh = data[1]
   print(Sb, Sd, Sf, Sh)
   print(COLOR_RESET, end='')
   print("\n")
 
   # Total number of inputs at the node = Total number of outputs at the node
-  if (Ea + Ec + Ee + Eg != Sb + Sd + Sf + Sh):
-    print(RED + '\nThe total number of inputs is different from the total number of outputs')
-    print(COLOR_RESET, end='')
-    return 1
+  # if (Ea + Ec + Ee + Eg != Sb + Sd + Sf + Sh):
+  #   print(RED + '\nThe total number of inputs is different from the total number of outputs')
+  #   print(COLOR_RESET, end='')
+  #   return 1
   
   # !--> Here. From now on I changed the way we built the matrix
   # !--> Now it has 8 nodes... 😢
