@@ -11,7 +11,8 @@ GREEN = (22, 255, 0)
 YELLOW = (255, 255, 0)
 ORANGE = (255, 143, 0)
 LIGHT_BLUE = (0, 121, 255)
-LIGHT_PURPLE = (124, 0, 254)
+AQUA = (0, 255, 255)
+LIGHT_PURPLE = (173, 73, 225)
 
 
 def create_arrow_surface(color, size='normal'):
@@ -62,7 +63,7 @@ def run(values, CAPACITY, X8):
     FPS = 60  # Set the desired FPS
     frame_counter = 0
 
-    input_rect = pg.Rect(20, 20, 140, 32) 
+    input_rect = pg.Rect(20, 50, 140, 32) 
 
     # Initialize values
     Ea, Ec, Ee, Eg = values[0]
@@ -116,10 +117,15 @@ def run(values, CAPACITY, X8):
 
         if traffic < 3:
             if traffic == 2:
-                input_rect = pg.Rect(20, 50, 140, 32)
+                remaining_lights = [light for light in ['Ea', 'Ec', 'Ee', 'Eg'] if light not in traffic_lights1]
+                remaining_lights_text = ' '.join(remaining_lights)
+                render_text(screen, font_normal, f'Traffic Lights Cycle 2 - {remaining_lights_text}', (20, 10), GREEN)
+                render_text(screen, font_small, 'Enter the roads separated by space - Empty if none', (20, 40), LIGHT_PURPLE)
+            else:
+                render_text(screen, font_normal, 'Traffic Lights Cycle 1 - Ea Ec Ee Eg', (20, 10), GREEN)
+                render_text(screen, font_small, 'Enter the roads separated by space - Empty if none', (20, 40), LIGHT_PURPLE)
             
-            pg.draw.rect(screen, WHITE, input_rect)
-            render_text(screen, font_normal, user_text, (input_rect.x+5, input_rect.y+5), BLACK)
+            render_text(screen, font_small, '> ' + user_text, (20, 60), WHITE)
 
 
         # Draw Graph
@@ -195,35 +201,35 @@ def run(values, CAPACITY, X8):
             Ea_aux, Ec_aux, Ee_aux, Eg_aux = Ea, Ec, Ee, Eg
 
             if set(traffic_lights1) & set(traffic_lights2):
-                print("\033[31m" + "Cycle 2 cannot have the same roads as Cycle 1. Please try again." + "\033[39m")
-                traffic_lights2 = []
+                print("\033[31m" + "\nCycle 2 cannot have the same roads as Cycle 1! Run again!" + "\033[39m")
+                traffic_lights2 = list(set(traffic_lights2) - set(traffic_lights1))
+            
+            if (frame_counter//600) % 2 == 0:
+                traffic_lights_red = traffic_lights1
+                traffic_lights_green = traffic_lights2
             else:
-                if (frame_counter//600) % 2 == 0:
-                    traffic_lights_red = traffic_lights1
-                    traffic_lights_green = traffic_lights2
-                else:
-                    traffic_lights_red = traffic_lights2
-                    traffic_lights_green = traffic_lights1
-                if 'Ea' in traffic_lights_red:
-                    Ea_aux = 0
-                    fill_arrow(arrow_north_in, RED)
-                else:
-                    fill_arrow(arrow_north_in, GREEN)
-                if 'Ec' in traffic_lights_red:
-                    Ec_aux = 0
-                    fill_arrow(arrow_east_in, RED)
-                else:
-                    fill_arrow(arrow_east_in, GREEN)
-                if 'Ee' in traffic_lights_red:
-                    Ee_aux = 0
-                    fill_arrow(arrow_south_in, RED)
-                else:
-                    fill_arrow(arrow_south_in, GREEN)
-                if 'Eg' in traffic_lights_red:
-                    Eg_aux = 0
-                    fill_arrow(arrow_west_in, RED)
-                else:
-                    fill_arrow(arrow_west_in, GREEN)
+                traffic_lights_red = traffic_lights2
+                traffic_lights_green = traffic_lights1
+            if 'Ea' in traffic_lights_red:
+                Ea_aux = 0
+                fill_arrow(arrow_north_in, RED)
+            else:
+                fill_arrow(arrow_north_in, GREEN)
+            if 'Ec' in traffic_lights_red:
+                Ec_aux = 0
+                fill_arrow(arrow_east_in, RED)
+            else:
+                fill_arrow(arrow_east_in, GREEN)
+            if 'Ee' in traffic_lights_red:
+                Ee_aux = 0
+                fill_arrow(arrow_south_in, RED)
+            else:
+                fill_arrow(arrow_south_in, GREEN)
+            if 'Eg' in traffic_lights_red:
+                Eg_aux = 0
+                fill_arrow(arrow_west_in, RED)
+            else:
+                fill_arrow(arrow_west_in, GREEN)
             
             negatives = []
             
