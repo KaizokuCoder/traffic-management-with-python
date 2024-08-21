@@ -218,7 +218,7 @@ def main():
   X8 = float(input())
   print(COLOR_RESET, end='')
 
-  while X8 <= (-lower_bound) and X8 >= Ea + Ec + Ee + Eg:
+  while X8 < (-lower_bound) or X8 > (Ea + Ec + Ee + Eg):
     print(f'Type the value of X8 {YELLOW}({-lower_bound} <= X8 <= {Ea + Ec + Ee + Eg}){COLOR_RESET}: ')
     print(DARK_GRAY, end='')
     X8 = float(input())
