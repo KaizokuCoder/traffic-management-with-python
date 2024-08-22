@@ -331,13 +331,13 @@ def run(values, CAPACITY, X8):
 
             # Edges In and Out Values
             render_text(screen, font_small, 'Ea: %d' % Ea_aux, (620, 60), RED if 'Ea' in traffic_lights_red else GREEN)
-            render_text(screen, font_small, 'Sb: %d%%' % Sb, (825, 60), ORANGE)
+            render_text(screen, font_small, 'Sb: %d' % round(Sb*total_entries/100, 2), (825, 60), ORANGE)
             render_text(screen, font_small, 'Ec: %d' % Ec_aux, (1025, 215), RED if 'Ec' in traffic_lights_red else GREEN)
-            render_text(screen, font_small, 'Sd: %d%%' % Sd, (1005, 415), ORANGE)
+            render_text(screen, font_small, 'Sd: %d' % round(Sd*total_entries/100, 2), (1005, 415), ORANGE)
             render_text(screen, font_small, 'Ee: %d' % Ee_aux, (820, 615), RED if 'Ee' in traffic_lights_red else GREEN)
-            render_text(screen, font_small, 'Sf: %d%%' % Sf, (620, 615), ORANGE)
+            render_text(screen, font_small, 'Sf: %d' % round(Sf*total_entries/100, 2), (620, 615), ORANGE)
             render_text(screen, font_small, 'Eg: %d' % Eg_aux, (360, 415), RED if 'Eg' in traffic_lights_red else GREEN)
-            render_text(screen, font_small, 'Sh: %d%%' % Sh, (370, 215), ORANGE)
+            render_text(screen, font_small, 'Sh: %d' % round(Sh*total_entries/100, 2), (370, 215), ORANGE)
 
 
             # Show Data
