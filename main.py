@@ -28,7 +28,7 @@ BRIGHT_YELLOW = '\033[93m'
 COLOR_RESET = '\033[39m'
 
 # Roundway capacity
-CAPACITY = 250
+CAPACITY = 720
 
 def menu(f, error = ''):
   # Initializing Input and Output values
@@ -59,7 +59,7 @@ def menu(f, error = ''):
       Ea, Ec, Ee, Eg = [int(x) for x in input().split()]
       print(COLOR_RESET, end='')
 
-      print(f'\nEnter the output values {RED}(Red){COLOR_RESET}, separating them with a space:')
+      print(f'\nEnter the output values {RED}(Red){COLOR_RESET} in %, separating them with a space:')
       print(DARK_GRAY, end='')
       Sb, Sd, Sf, Sh = [int(x) for x in input().split()]
       print(COLOR_RESET, end='')
@@ -106,9 +106,9 @@ def main():
   # Getting the values for the inputs and outputs of the roundabout
   Ea, Sb, Ec, Sd, Ee, Sf, Eg, Sh = menu(f)
 
-  # Checking for an error
-  while (Ea + Ec + Ee + Eg != Sb + Sd + Sf + Sh):
-    Ea, Sb, Ec, Sd, Ee, Sf, Eg, Sh = menu(f, 'The total number of inputs is different from the total number of outputs!')
+  # # Checking for an error
+  # while (Ea + Ec + Ee + Eg != Sb + Sd + Sf + Sh):
+  #   Ea, Sb, Ec, Sd, Ee, Sf, Eg, Sh = menu(f, 'The total number of inputs is different from the total number of outputs!')
 
   print("\n")
 
@@ -135,9 +135,8 @@ def main():
   #   print(COLOR_RESET, end='')
   #   return 1
   
-  # !--> Here. From now on I changed the way we built the matrix
+  # !--> Here. We will create the matrix for the roundabout
   # !--> Now it has 8 nodes... 😢
-  # !--> We also will need a new image for representation of the roundabout
 
   # Equations:
 
@@ -152,14 +151,17 @@ def main():
 
   # Creating the matrix
 
+  entries_sum = Ea + Ec + Ee + Eg
+  Sb_value, Sd_value, Sf_value, Sh_value = round(Sb*(entries_sum/100),2), round(Sd*(entries_sum/100),2), round(Sf*(entries_sum/100),2), round(Sh*(entries_sum/100), 2)
+
   flow_matrix = [[-1,  0,  0,  0,  0,  0,  0,  1, -Ea],
-                 [ 1, -1,  0,  0,  0,  0,  0,  0,  Sb],
+                 [ 1, -1,  0,  0,  0,  0,  0,  0,  Sb_value],
                  [ 0,  1, -1,  0,  0,  0,  0,  0, -Ec],
-                 [ 0,  0,  1, -1,  0,  0,  0,  0,  Sd],
+                 [ 0,  0,  1, -1,  0,  0,  0,  0,  Sd_value],
                  [ 0,  0,  0,  1, -1,  0,  0,  0, -Ee],
-                 [ 0,  0,  0,  0,  1, -1,  0,  0,  Sf],
+                 [ 0,  0,  0,  0,  1, -1,  0,  0,  Sf_value],
                  [ 0,  0,  0,  0,  0,  1, -1,  0, -Eg],
-                 [ 0,  0,  0,  0,  0,  0,  1, -1,  Sh],]
+                 [ 0,  0,  0,  0,  0,  0,  1, -1,  Sh_value],]
   
   # !--> Now we are using the escalation.py file to solve the matrix
   # !--> It basically show step by step the solution of the matrix
@@ -168,13 +170,13 @@ def main():
 
   escalation.toLrfe(flow_matrix)
 
-  solution_1 = flow_matrix[0][8]
-  solution_2 = flow_matrix[1][8]
-  solution_3 = flow_matrix[2][8]
-  solution_4 = flow_matrix[3][8]
-  solution_5 = flow_matrix[4][8]
-  solution_6 = flow_matrix[5][8]
-  solution_7 = flow_matrix[6][8]
+  solution_1 = round(flow_matrix[0][8], 2)
+  solution_2 = round(flow_matrix[1][8], 2)
+  solution_3 = round(flow_matrix[2][8], 2)
+  solution_4 = round(flow_matrix[3][8], 2)
+  solution_5 = round(flow_matrix[4][8], 2)
+  solution_6 = round(flow_matrix[5][8], 2)
+  solution_7 = round(flow_matrix[6][8], 2)
   # solution_8 must be 0
 
   # !--> Some explanation about the results
@@ -219,7 +221,7 @@ def main():
   print(COLOR_RESET, end='')
 
   while X8 < (-lower_bound) or X8 > (Ea + Ec + Ee + Eg):
-    print(f'Type the value of X8 {YELLOW}({-lower_bound} <= X8 <= {Ea + Ec + Ee + Eg}){COLOR_RESET}: ')
+    print(f'Type the value of X8 {YELLOW}({-lower_bound:.2f} <= X8 <= {Ea + Ec + Ee + Eg}){COLOR_RESET}: ')
     print(DARK_GRAY, end='')
     X8 = float(input())
     print(COLOR_RESET, end='')
